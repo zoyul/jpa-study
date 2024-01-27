@@ -22,7 +22,6 @@ public class Member {
     @JoinColumn(name = "LOCKER_ID")
     private Locker locker;
 
-    @ManyToMany
-    @JoinTable(name = "MEMBER_PRODUCT")     // 중간 테이블이 만들어짐
-    private List<Product> products = new ArrayList<>();
+    @OneToMany(mappedBy = "member")
+    private List<MemberProduct> memberProducts = new ArrayList<>();
 }
