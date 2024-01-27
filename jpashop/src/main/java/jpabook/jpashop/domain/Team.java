@@ -17,6 +17,7 @@ public class Team {
 
     private String name;
 
-    @OneToMany(mappedBy = "team")
+    @OneToMany
+    @JoinColumn(name = "TEAM_ID")       // JoinColumn을 사용하지 않으면 Join Table을 사용함
     private List<Member> members = new ArrayList<>();
 }

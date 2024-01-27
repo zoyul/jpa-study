@@ -24,6 +24,7 @@ public class Main {
 
             Team team = new Team();
             team.setName("teamA");
+            // 외래키가 Member 테이블에 있기 때문에 update쿼리가 따로 나감
             team.getMembers().add(member);
 
             em.persist(team);
