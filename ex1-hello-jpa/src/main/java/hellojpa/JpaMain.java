@@ -18,27 +18,20 @@ public class JpaMain {
         tx.begin();
 
         try {
-            // 저장
-            Team team = new Team();
-            team.setName("TeamA");
-            em.persist(team);
 
-            Member member = new Member();
-            member.setUsername("member1");
-            member.setTeam(team);
-            em.persist(member);
+            Movie movie = new Movie();
+            movie.setDirector("aaaa");
+            movie.setActor("bbb");
+            movie.setName("아수라");
+            movie.setPrice(10000);
 
-//            team.getMembers().add(member);
+            em.persist(movie);
 
-//            em.flush();
-//            em.clear();
+            em.flush();
+            em.clear();
 
-            Team findTeam = em.find(Team.class, team.getId());
-            List<Member> members = findTeam.getMembers();
-
-            for (Member m : members) {
-                System.out.println("m = " + m.getUsername());
-            }
+            Movie findMovie = em.find(Movie.class, movie.getId());
+            System.out.println("findMovie = " + findMovie);     // inner join 으로 가져옴
 
             tx.commit();
         } catch (Exception e) {
