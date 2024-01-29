@@ -7,8 +7,8 @@ import javax.persistence.*;
 
 @Entity
 @Getter @Setter
-@Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn            // DTYPE이 생김
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
+@DiscriminatorColumn            // 단일 테이블 전략은 이 설정이 없어도 필수로 DTYPE이 생성됨
 public class Item {
 
     @Id @GeneratedValue
