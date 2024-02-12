@@ -1,7 +1,6 @@
 package jpabook;
 
-import jpabook.jpashop.domain.Member;
-import jpabook.jpashop.domain.Team;
+import jpabook.jpashop.domain.Book;
 
 import javax.persistence.EntityManager;
 import javax.persistence.EntityManagerFactory;
@@ -17,17 +16,11 @@ public class Main {
         tx.begin();
 
         try {
-            Member member = new Member();
-            member.setUsername("member1");
+            Book book = new Book();
+            book.setName("JPA");
+            book.setAuthor("김영한");
 
-            em.persist(member);
-
-            Team team = new Team();
-            team.setName("teamA");
-            // 외래키가 Member 테이블에 있기 때문에 update쿼리가 따로 나감
-            team.getMembers().add(member);
-
-            em.persist(team);
+            em.persist(book);
 
             tx.commit();
         } catch (Exception e) {
