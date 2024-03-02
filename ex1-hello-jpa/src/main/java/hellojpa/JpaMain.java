@@ -9,25 +9,24 @@ import java.time.LocalDateTime;
 public class JpaMain {
 
     public static void main(String[] args) {
-        // EntityManagerFactory는 애플리케이션 로딩 시점에 딱 하나만 만들어야함 + 쓰레드 간에 공유하면 안됨 사용하고 버려야함
         EntityManagerFactory emf = Persistence.createEntityManagerFactory("hello");
         EntityManager em = emf.createEntityManager();
 
-        // JPA의 모든 데이터 변경은 무조건 하나의 트랜잭션 안에서 일어나야 한다
         EntityTransaction tx = em.getTransaction();
         tx.begin();
 
         try {
-
             Member member = new Member();
-            member.setUsername("user");
-            member.setCreatedBy("kim");
-            member.setCreateDate(LocalDateTime.now());
+            member.setUsername("hello");
 
             em.persist(member);
 
             em.flush();
-            em.close();
+            em.clear();
+
+//            Member findMember = em.find(Member.class, member.getId());
+            Member findMember = em.getReference(Member.class, member.getId());
+            System.out.println("findMEmber.username = " + findMember.getUsername());
 
             tx.commit();
         } catch (Exception e) {
