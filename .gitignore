@@ -19,9 +19,6 @@
 *.tar.gz
 *.rar
 
-
-
-
 # User-specific stuff
 .idea/**/workspace.xml
 .idea/**/tasks.xml
@@ -35,6 +32,9 @@
 .gradle
 **/build/
 !src/**/build/
+.gradle/
+gradle-wrapper.jar
+gradle-wrapper.properties
 
 
 # Gradle and Maven with auto-import
