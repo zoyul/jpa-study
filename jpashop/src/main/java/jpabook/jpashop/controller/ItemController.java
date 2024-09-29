@@ -62,16 +62,23 @@ public class ItemController {
     }
 
     @PostMapping("/items/{itemId}/edit")
-    public String updateItem(@ModelAttribute("form") BookForm form){
-        Book book = new Book();
-        book.setId(form.getId());
-        book.setName(form.getName());
-        book.setPrice(form.getPrice());
-        book.setStockQuantity(form.getStockQuantity());
-        book.setAuthor(form.getAuthor());
-        book.setIsbn(form.getIsbn());
+    public String updateItem(@PathVariable Long itemId, @ModelAttribute("form") BookForm form){
 
-        itemService.saveItem(book);
+        // Book : 새로운 객체지만 id가 세팅되어 있음 -> 준영속 상태의 객체(JPA가 식별할 수 있는 데이터를 가지고 있다)
+        // Book 객체는 이미 DB에 한 번 저장되어서 식별자가 존재한다. 임의로 만들어낸 객체라도 식별자가 있다면 준영속 엔티티
+        // 준영속 상태의 객체는 영속성 컨텍스트가 더는 관리하지 않는다
+        // 준영속 엔티티를 수정하는 방법 2가지 : 변경감지 , 병합
+//        Book book = new Book();
+//        book.setId(form.getId());
+//        book.setName(form.getName());
+//        book.setPrice(form.getPrice());
+//        book.setStockQuantity(form.getStockQuantity());
+//        book.setAuthor(form.getAuthor());
+//        book.setIsbn(form.getIsbn());
+//        itemService.saveItem(book);
+
+        itemService.updateItem(itemId, form.getName(), form.getPrice(), form.getStockQuantity());
+
         return "redirect:items";
     }
 }

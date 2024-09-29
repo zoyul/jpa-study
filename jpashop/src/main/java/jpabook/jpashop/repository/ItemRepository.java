@@ -18,7 +18,11 @@ public class ItemRepository {
         if (item.getId() == null) {
             em.persist(item);
         } else {
-            em.merge(item);
+            // 병합
+            // itemService의 updateItem와 동일
+            // mergeItem : 영속성 컨텍스트에서 관리, item : X
+            // 변경감지 : 원하는 속성만 변경 가능, 병합 : 모든 속성이 변경
+            Item mergeItem = em.merge(item);
         }
     }
 
