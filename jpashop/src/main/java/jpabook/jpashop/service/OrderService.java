@@ -12,7 +12,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.util.List;
 
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = true) // 읽기 전용. 영속성 컨텍스트를 flush하지 않음 (약간의 성능 향상)
 @RequiredArgsConstructor
 public class OrderService {
 

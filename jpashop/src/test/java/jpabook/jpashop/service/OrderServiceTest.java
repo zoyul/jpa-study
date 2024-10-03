@@ -16,7 +16,7 @@ import org.springframework.transaction.annotation.Transactional;
 import static org.junit.jupiter.api.Assertions.*;
 
 @SpringBootTest
-@Transactional
+@Transactional  // 각각의 테스트를 실행할 때마다 트랜잭션을 시작하고 테스트가 끝나면 트랜잭션 강제로 롤백(테스트인 경우만)
 public class OrderServiceTest {
 
     @Autowired EntityManager em;
