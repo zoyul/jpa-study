@@ -5,7 +5,7 @@ import jakarta.persistence.TypedQuery;
 import jakarta.persistence.criteria.*;
 import jpabook.jpashop.domain.Order;
 import jpabook.jpashop.domain.OrderSearch;
-import jpabook.jpashop.domain.OrderStatus;
+import jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryDto;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Repository;
 import org.springframework.util.StringUtils;
@@ -95,4 +95,25 @@ public class OrderRepository {
         return query.getResultList();
     }
 
+    // fetch join으로 member, delivery를 조회했기 때문에 지연로딩 X
+    public List<Order> findAllWithMemberDelivery() {
+        // 한방쿼리로 join해서 가져옴
+        return em.createQuery(
+                "select o from Order o" +
+                        " join fetch o.member m" +
+                        " join fetch o.delivery d", Order.class
+        ).getResultList();
+    }
+
+    // 내가 원하는 값만 select 해서 가져올 수 있음 -> DB - 애플리케이션 네트워크 용량 최적화(생각보다 미비)
+    // API스펙에 맞춘 쿼리가 repository에 들어가게 됨
+    // repository는 가급적 순순한 entity만 조회하는 데에 사용하자
+    public List<OrderSimpleQueryDto> findOrdersByDtos() {
+        return em.createQuery(
+                "select new jpabook.jpashop.repository.order.simplequery.OrderSimpleQueryDto(o.id, m.name, o.orderDate, o.status, d.address)" +
+                        " from Order o" +
+                        " join o.member m" +
+                        " join o.delivery d", OrderSimpleQueryDto.class
+        ).getResultList();
+    }
 }
