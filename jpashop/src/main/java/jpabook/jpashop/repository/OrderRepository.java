@@ -116,4 +116,19 @@ public class OrderRepository {
                         " join o.delivery d", OrderSimpleQueryDto.class
         ).getResultList();
     }
+
+    // 1대다 조인이기 때문에 데이터 수가 join되는 컬럼 수많큼 늘어나는 현상이 생기는데
+    // spring boot 3 버전부터 Hibernate 6 버전을 사용하면서 자동으로 distinct 적용이 됨
+    // select distinct o from Order o
+    // distinct 기능 : Order를 가져올 때 같은 id 값이면 중복을 제거, DB 쿼리에 distinct 날려줌
+    // 단점 : 페이징 불가능, setFirstResult, setMaxResult는 모든 데이터를 메모리에 올린 후 페이징 처리
+    public List<Order> findAllWithItem() {
+        return em.createQuery(
+                "select distinct o from Order o" +
+                " join fetch o.member m" +
+                " join fetch o.delivery d" +
+                " join fetch o.orderItems oi" +
+                " join fetch oi.item i", Order.class)
+                .getResultList();
+    }
 }
