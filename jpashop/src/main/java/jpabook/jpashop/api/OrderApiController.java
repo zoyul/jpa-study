@@ -32,7 +32,7 @@ public class OrderApiController {
 
     // 쿼리가 엄청나게 많이 나감
     // N = 2(order가 2개니까)
-    // order 1번 + member N번 + delivery N 번 + orderItem의 item 2번
+    // order 1번 + member N번 + delivery N 번 + orderItem N 번 + orderItem의 item N x 2번
     @GetMapping("/api/v2/orders")
     public List<OrderDto> ordersV2() {
         List<Order> orders = orderRepository.findAllByString(new OrderSearch());
