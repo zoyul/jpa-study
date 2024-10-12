@@ -12,7 +12,9 @@ spring:
       hibernate:
 #        show_sql: true
         format_sql: true
-        default_batch_fetch_size: 100    # ???? ??? ? ? ?? ??? ???  in??? ???
+        default_batch_fetch_size: 100    # 컬렉션 조회 시 in 절을 사용하여 가져오는 데이터 단위
+    # default 값은 true (true일 경우 API응답 까지 영속성 컨텍스트 및 DB커넥션 유지, false일 경우 @Transactional 애노테이션 안에서만 유지)
+    open-in-view: true
 
 logging:
   level:
