@@ -22,7 +22,7 @@ class MemberJpaRepositoryTest {
         Member findMember = memberJpaRepository.find(savedMember.getId());
 
         assertThat(findMember.getId()).isEqualTo(member.getId());
-        assertThat(findMember.getName()).isEqualTo(member.getName());
+        assertThat(findMember.getUsername()).isEqualTo(member.getUsername());
         assertThat(findMember).isEqualTo(member);           // 같은 transaction 안에서는 같은 영속성 컨텍스트의 데이터임을 보장한다
     }
 
