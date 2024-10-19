@@ -7,6 +7,10 @@ import lombok.*;
 @Getter @Setter
 @NoArgsConstructor(access = AccessLevel.PROTECTED)      // jpa entity는 기본생성자가 하나 필요(protected 이상)
 @ToString(of = {"id", "username", "age"})
+@NamedQuery(
+        name = "Member.findByUsername",
+        query = "select m from Member  m where m.username = :username"
+)
 public class Member {
 
     @Id @GeneratedValue
