@@ -1,5 +1,7 @@
 package study.datajpa.repository;
 
+import jakarta.persistence.EntityManager;
+import jakarta.persistence.PersistenceContext;
 import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -25,6 +27,7 @@ class MemberRepositoryTest {
 
     @Autowired MemberRepository memberRepository;
     @Autowired TeamRepository teamRepository;
+    @PersistenceContext EntityManager em;
 
     @Test
     public void testMember() {
@@ -227,5 +230,47 @@ class MemberRepositoryTest {
 //        assertThat(page.getTotalPages()).isEqualTo(2);
         assertThat(page.isFirst()).isTrue();
         assertThat(page.hasNext()).isTrue();
+    }
+
+    @Test
+    public void bulkAgePlus() {
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 19));
+        memberRepository.save(new Member("member3", 20));
+        memberRepository.save(new Member("member4", 22));
+        memberRepository.save(new Member("member5", 40));
+
+        // bulk update를 실행하면 영속성 컨텍스트를 무시하고 바로 db에 반영한다
+        int resultCount = memberRepository.bulkAgePlus(20);
+        assertThat(resultCount).isEqualTo(3);
+
+        // 영속성 컨텍스트에서 찾아오기 떄문에 db에 반영되지 않은 1차 캐시 값이 반환된다 이미 db에는 업데이트가 되었음에도
+        List<Member> result = memberRepository.findByUsername("member5");
+        Member member5 = result.get(0);
+        assertThat(member5.getAge()).isEqualTo(40);
+
+        // 영속성 컨텍스트를 초기화 한 후 조회해야함
+        em.flush();
+        em.clear();
+        List<Member> result2 = memberRepository.findByUsername("member5");
+        Member member5_2 = result2.get(0);
+        assertThat(member5_2.getAge()).isEqualTo(41);
+    }
+
+    @Test
+    public void bulkAgePlus2() {
+        memberRepository.save(new Member("member1", 10));
+        memberRepository.save(new Member("member2", 19));
+        memberRepository.save(new Member("member3", 20));
+        memberRepository.save(new Member("member4", 22));
+        memberRepository.save(new Member("member5", 40));
+
+        // clearAutomatically = true 설정 시 clear를 자동으로 해줌
+        int resultCount = memberRepository.bulkAgePlus2(20);
+        assertThat(resultCount).isEqualTo(3);
+
+        List<Member> result = memberRepository.findByUsername("member5");
+        Member member5 = result.get(0);
+        assertThat(member5.getAge()).isEqualTo(41);
     }
 }
