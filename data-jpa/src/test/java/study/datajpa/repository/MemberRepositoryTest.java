@@ -10,6 +10,7 @@ import study.datajpa.entity.Member;
 import study.datajpa.entity.Team;
 
 import java.util.List;
+import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
@@ -142,5 +143,38 @@ class MemberRepositoryTest {
         List<Member> result = memberRepository.findByNames(List.of("AAA", "BBB"));
 
         assertThat(result.size()).isEqualTo(2);
+    }
+
+    @Test
+    public void returnType() {
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("BBB", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        List<Member> listResult = memberRepository.findListByUsername("AAA");
+        Member memberResult = memberRepository.findMemberByUsername("AAA");
+        Optional<Member> optionalResult = memberRepository.findOptionalByUsername("AAA");
+
+        assertThat(listResult.size()).isEqualTo(1);
+        assertThat(memberResult.getUsername()).isEqualTo("AAA");
+        assertThat(optionalResult.get().getUsername()).isEqualTo("AAA");
+    }
+
+    @Test
+    public void returnType2() {
+        Member m1 = new Member("AAA", 10);
+        Member m2 = new Member("BBB", 20);
+        memberRepository.save(m1);
+        memberRepository.save(m2);
+
+        List<Member> listResult = memberRepository.findListByUsername("ZZZ");
+        Member memberResult = memberRepository.findMemberByUsername("ZZZ");
+        Optional<Member> optionalResult = memberRepository.findOptionalByUsername("ZZZ");
+
+        // 반환타입이 list인 경우 empty list 반환(not null), 객체로 받을 경우 null을 반환
+        assertThat(listResult.size()).isEqualTo(0);
+        assertThat(memberResult).isNull();
+        assertThat(optionalResult).isEmpty();
     }
 }

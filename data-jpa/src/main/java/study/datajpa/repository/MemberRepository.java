@@ -7,6 +7,7 @@ import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
 
 import java.util.List;
+import java.util.Optional;
 
 // interface를 선언하면 spring data jpa가 구현체를 직접 주입해줌
 public interface MemberRepository extends JpaRepository<Member, Long> {
@@ -29,4 +30,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 
     @Query("select m from Member m where m.username in :names")
     List<Member> findByNames(@Param("names") List<String> names);
+
+    // 반환 타입을 유연하게 사용할 수 있다
+    List<Member> findListByUsername(String username);
+    Member findMemberByUsername(String username);
+    Optional<Member> findOptionalByUsername(String username);
+
+
 }
