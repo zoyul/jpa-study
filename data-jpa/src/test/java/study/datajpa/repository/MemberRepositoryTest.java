@@ -273,4 +273,93 @@ class MemberRepositoryTest {
         Member member5 = result.get(0);
         assertThat(member5.getAge()).isEqualTo(41);
     }
+
+    @Test
+    public void findMemberLazy() {
+        // given
+        // member1 -> teamA
+        // member2 -> teamB
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        em.flush();
+        em.clear();
+
+        // N + 1 문제 발생 (entity graph 사용 전)
+        List<Member> members = memberRepository.findAll();
+        members.forEach(m -> {
+            System.out.println("member = " + m.getUsername());
+            // class study.datajpa.entity.Team$HibernateProxy$cTCYt8eY
+            System.out.println("member.teamClass = " + m.getTeam().getClass());
+            System.out.println("member.team = " + m.getTeam().getName());
+        });
+    }
+
+    @Test
+    public void findMemberFetch() {
+        // given
+        // member1 -> teamA
+        // member2 -> teamB
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        em.flush();
+        em.clear();
+
+        // fetch join
+        List<Member> members = memberRepository.findMemberFetchJoin();
+        members.forEach(m -> {
+            System.out.println("member = " + m.getUsername());
+            // class study.datajpa.entity.Team
+            System.out.println("member.teamClass = " + m.getTeam().getClass());
+            System.out.println("member.team = " + m.getTeam().getName());
+        });
+    }
+
+    @Test
+    public void findMemberEntityGraph() {
+        // given
+        // member1 -> teamA
+        // member2 -> teamB
+        Team teamA = new Team("teamA");
+        Team teamB = new Team("teamB");
+        teamRepository.save(teamA);
+        teamRepository.save(teamB);
+        Member member1 = new Member("member1", 10, teamA);
+        Member member2 = new Member("member2", 10, teamB);
+        memberRepository.save(member1);
+        memberRepository.save(member2);
+
+        em.flush();
+        em.clear();
+
+        // entity graph (내부적으로 fetch join을 한다)
+        List<Member> members = memberRepository.findAll();
+        members.forEach(m -> {
+            System.out.println("member = " + m.getUsername());
+            // class study.datajpa.entity.Team
+            System.out.println("member.teamClass = " + m.getTeam().getClass());
+            System.out.println("member.team = " + m.getTeam().getName());
+        });
+
+        List<Member> members2 = memberRepository.findEntityGraphByUsername("member1");
+        members2.forEach(m -> {
+            System.out.println("member = " + m.getUsername());
+            // class study.datajpa.entity.Team
+            System.out.println("member.teamClass = " + m.getTeam().getClass());
+            System.out.println("member.team = " + m.getTeam().getName());
+        });
+    }
 }
