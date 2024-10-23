@@ -14,7 +14,7 @@ import java.util.List;
 import java.util.Optional;
 
 // interface를 선언하면 spring data jpa가 구현체를 직접 주입해줌
-public interface MemberRepository extends JpaRepository<Member, Long> {
+public interface MemberRepository extends JpaRepository<Member, Long>, MemberRepositoryCustom {
 
     List<Member> findByUsernameAndAgeGreaterThan(String username, int age);
 

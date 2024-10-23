@@ -402,4 +402,9 @@ class MemberRepositoryTest {
         // select문 뒤에  for update 붙음
         List<Member> result = memberRepository.findLockByUsername(member.getUsername());
     }
+
+    @Test
+    void callCustom() {
+        List<Member> result = memberRepository.findMemberCustom();
+    }
 }
