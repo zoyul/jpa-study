@@ -362,4 +362,44 @@ class MemberRepositoryTest {
             System.out.println("member.team = " + m.getTeam().getName());
         });
     }
+
+    @Test
+    void queryHint() {
+        Member member = new Member("member1", 10);
+        memberRepository.save(member);
+        em.flush();     // 영속성 컨텍스트 db반영
+        em.clear();     // 영속성 컨텍스트 1차 캐시 삭제
+
+        Member findMember = memberRepository.findById(member.getId()).get();
+        findMember.setUsername("member2");
+
+        // 변경 감지 -> db에 update쿼리 실행 (변경 감지를 한다는 건 원본을 안다는 것 -> 정보를 두 개 가지고 있는 것. 원본, 변경)
+        em.flush();
+    }
+
+    @Test
+    void queryHint2() {
+        Member member = new Member("member1", 10);
+        memberRepository.save(member);
+        em.flush();     // 영속성 컨텍스트 db반영
+        em.clear();     // 영속성 컨텍스트 1차 캐시 삭제
+
+        // 업데이를 db에 굳이 반영하지 않을 거고 값만 바꿀건데 정보를 두 개 관리하는 것은 비효율적 -> JPA 힌트 사용
+        // 그렇게 큰 성능 최적화가 되진 않음. 캐싱 등의 다른 방법을 쓰는 게 더 효율적이긴 함
+        Member findMember = memberRepository.findReadOnlyByUsername(member.getUsername());
+        findMember.setUsername("member2");
+
+        em.flush();
+    }
+
+    @Test
+    void lock() {
+        Member member = new Member("member1", 10);
+        memberRepository.save(member);
+        em.flush();
+        em.clear();
+
+        // select문 뒤에  for update 붙음
+        List<Member> result = memberRepository.findLockByUsername(member.getUsername());
+    }
 }

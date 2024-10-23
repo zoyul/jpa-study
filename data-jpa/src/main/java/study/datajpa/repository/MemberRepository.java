@@ -1,12 +1,11 @@
 package study.datajpa.repository;
 
+import jakarta.persistence.LockModeType;
+import jakarta.persistence.QueryHint;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Slice;
-import org.springframework.data.jpa.repository.EntityGraph;
-import org.springframework.data.jpa.repository.JpaRepository;
-import org.springframework.data.jpa.repository.Modifying;
-import org.springframework.data.jpa.repository.Query;
+import org.springframework.data.jpa.repository.*;
 import org.springframework.data.repository.query.Param;
 import study.datajpa.dto.MemberDto;
 import study.datajpa.entity.Member;
@@ -73,4 +72,11 @@ public interface MemberRepository extends JpaRepository<Member, Long> {
 //    @EntityGraph("Member.all")            // 이렇게 Entity에 @NamedEntityGraph를 설정해서 사용할 수도 있다
     // 참고로 find...By 에서 ... 에는 아무 문자나 적어도 동일하다
     List<Member> findEntityGraphByUsername(@Param("username") String username);
+
+    @QueryHints(value = @QueryHint(name = "org.hibernate.readOnly", value = "true"))
+    Member findReadOnlyByUsername(String username);
+
+    // jpa에서 제공하는 lock을 애노테이션을 추가하여 편하게 쓸 수 있다
+    @Lock(LockModeType.PESSIMISTIC_READ)
+    List<Member> findLockByUsername(String username);
 }
