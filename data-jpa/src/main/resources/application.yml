@@ -13,6 +13,14 @@ spring:
         format_sql: true
 #        show_sql: true
 
+  # global 설정
+  data:
+    web:
+      pageable:
+        default-page-size: 10       # default 값
+        max-page-size: 2000
+        one-indexed-parameters: true    # index를 1부터 시작하게됨. page 응답 안의 pageable 값이 안맞게됨
+
 logging.level:
     org.hibernate.SQL : debug
     org.hibernate.type : trace
