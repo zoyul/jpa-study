@@ -79,4 +79,8 @@ public interface MemberRepository extends JpaRepository<Member, Long>, MemberRep
     // jpa에서 제공하는 lock을 애노테이션을 추가하여 편하게 쓸 수 있다
     @Lock(LockModeType.PESSIMISTIC_READ)
     List<Member> findLockByUsername(String username);
+
+    List<UsernameOnly> findProjectionsByUsername(@Param("username") String username);
+
+    <T> List<T>  findProjectionsByUsername(@Param("username") String username, Class<T> type);
 }
